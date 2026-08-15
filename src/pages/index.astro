@@ -2,19 +2,71 @@
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout title="COMP4020 prototype">
+<Layout title="F1 wing angle explainer">
+  <nav aria-label="Primary">
+    <a href="./">Home</a>
+  </nav>
   <header>
-    <nav aria-label="Primary">
-      <a href="./">Home</a>
-    </nav>
+    <h1>How much wing does an F1 car need?</h1>
+    <p>
+      More rear wing angle means more downforce and more grip through corners
+      — but more drag, so a lower top speed on the straights. Push it past the
+      point where the wing stalls and you lose both at once.
+    </p>
   </header>
   <main>
-    <h1>COMP4020 prototype</h1>
-    <p data-testid="intro">
-      Replace this with your prototype. This week's brief is on the course
-      website; <code>spec/README.md</code> explains how the checks in this repo
-      relate to it.
-    </p>
+    <section class="chart-section" aria-labelledby="chart-heading">
+      <h2 id="chart-heading">Corner speed and top speed vs. wing angle</h2>
+
+      <svg class="angle-chart" viewBox="0 0 600 300" data-testid="angle-chart" aria-hidden="true">
+        <line class="stall-line" data-testid="stall-line"></line>
+        <text class="stall-label" data-testid="stall-label">stall</text>
+        <path class="corner-speed-path" data-testid="corner-speed-path"></path>
+        <path class="top-speed-path" data-testid="top-speed-path"></path>
+        <line class="marker-line" data-testid="angle-marker-line"></line>
+        <circle class="corner-speed-marker" data-testid="corner-speed-marker" r="4"></circle>
+        <circle class="top-speed-marker" data-testid="top-speed-marker" r="4"></circle>
+      </svg>
+
+      <p class="chart-legend">
+        <span class="legend-item corner">Corner speed</span>
+        <span class="legend-item top">Top speed</span>
+      </p>
+
+      <div class="slider-row">
+        <span class="slider-end-label" aria-hidden="true">0°</span>
+        <input
+          type="range"
+          id="wing-angle"
+          data-testid="wing-angle-slider"
+          min="0"
+          max="30"
+          step="1"
+          value="9"
+        />
+        <span class="slider-end-label" aria-hidden="true">30°</span>
+      </div>
+      <label for="wing-angle" class="slider-label">Rear wing angle</label>
+    </section>
+
+    <div class="stat-grid">
+      <div class="stat">
+        <span class="stat-label">Downforce</span>
+        <output for="wing-angle" data-testid="downforce-value" class="stat-value"></output>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Drag coefficient</span>
+        <output for="wing-angle" data-testid="drag-value" class="stat-value"></output>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Corner speed</span>
+        <output for="wing-angle" data-testid="corner-speed-value" class="stat-value"></output>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Top speed</span>
+        <output for="wing-angle" data-testid="top-speed-value" class="stat-value"></output>
+      </div>
+    </div>
   </main>
   <script src="../scripts/main.ts"></script>
 </Layout>

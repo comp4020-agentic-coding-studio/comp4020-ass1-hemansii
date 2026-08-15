@@ -1,16 +1,193 @@
+:root {
+  --ink: #1a1a1a;
+  --muted: #5a5a5a;
+  --accent: #0b5fff;
+  --corner-color: #0b5fff;
+  --top-speed-color: #d6336c;
+  --stall-color: #999;
+  --stat-bg: #f4f5f7;
+}
+
 body {
   margin: 0;
-  padding: 2rem;
+  padding: 1.25rem 1rem 3rem;
   font-family: system-ui, sans-serif;
   line-height: 1.6;
-  color: #1a1a1a;
+  color: var(--ink);
 }
 
+nav,
+header,
 main {
-  max-width: 40rem;
-  margin: 0 auto;
+  max-width: 56rem;
+  margin-inline: auto;
 }
 
-a {
-  color: #0b5fff;
+nav {
+  margin-bottom: 1.5rem;
+}
+
+nav a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+nav a:hover,
+nav a:focus-visible {
+  text-decoration: underline;
+}
+
+header h1 {
+  margin-bottom: 0.5rem;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+}
+
+header p {
+  color: var(--muted);
+  max-width: 40rem;
+}
+
+.chart-section {
+  margin-top: 1.5rem;
+}
+
+.chart-section h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+
+.angle-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.corner-speed-path {
+  fill: none;
+  stroke: var(--corner-color);
+  stroke-width: 2.5;
+}
+
+.top-speed-path {
+  fill: none;
+  stroke: var(--top-speed-color);
+  stroke-width: 2.5;
+}
+
+.stall-line {
+  stroke: var(--stall-color);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 4;
+}
+
+.stall-label {
+  font-size: 10px;
+  fill: var(--muted);
+  text-anchor: middle;
+}
+
+.marker-line {
+  stroke: var(--ink);
+  stroke-width: 1;
+  opacity: 0.6;
+}
+
+.corner-speed-marker {
+  fill: var(--corner-color);
+}
+
+.top-speed-marker {
+  fill: var(--top-speed-color);
+}
+
+.chart-legend {
+  display: flex;
+  gap: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0.5rem 0 1rem;
+}
+
+.legend-item {
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+.legend-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 0.9rem;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.legend-item.corner::before {
+  background: var(--corner-color);
+}
+
+.legend-item.top::before {
+  background: var(--top-speed-color);
+}
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.slider-end-label {
+  flex: 0 0 auto;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.slider-row input[type="range"] {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.slider-label {
+  display: block;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.35rem;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.stat {
+  background: var(--stat-bg);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.stat-value {
+  font-size: 1.4rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (width >= 40rem) {
+  .stat-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
