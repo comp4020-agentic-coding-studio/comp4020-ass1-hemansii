@@ -76,6 +76,19 @@ speed, and past the wing's stall angle you lose both at once.
    and draw an original, unbranded silhouette from scratch instead, landing in
    [`059c013`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/059c013).
 
+6. **"Doesn't break on resize" turned out to be a real, measurable bug, not a
+   given.** I asked for the resize/drag accessibility check as a should-still-be-true
+   sanity pass, expecting it to just confirm the viewBox-based SVGs were already
+   resolution-independent. Instead, `document.documentElement.scrollWidth` vs
+   `clientWidth` at 390px width showed the page actually grew a real horizontal
+   scrollbar (390 → 397px) once the wing angle passed stall, because the
+   rotating wing SVG's painted extent --- a CSS `transform`, not a layout
+   change --- was never clipped by its container. The fix was one line
+   (`overflow: hidden` on `.car-scene`), but it only surfaced because I checked
+   `scrollWidth` across the full angle range instead of trusting that
+   `viewBox` + responsive width already made resize safe
+   ([`5b01cbb`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/5b01cbb)).
+
 ## Before you ship
 
 `pnpm check:evidence` verifies your citations resolve to real commits, that the
