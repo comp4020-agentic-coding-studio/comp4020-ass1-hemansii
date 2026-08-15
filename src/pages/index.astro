@@ -9,6 +9,7 @@ import Layout from "../layouts/Layout.astro";
   <header>
     <h1>How much wing does an F1 car need?</h1>
     <p>
+      More wing sounds like it should just make the car faster. It doesn't.
       More rear wing angle means more downforce and more grip through corners
       — but more drag, so a lower top speed on the straights. Push it past the
       point where the wing stalls and you lose both at once.
@@ -20,6 +21,7 @@ import Layout from "../layouts/Layout.astro";
 
       <svg class="angle-chart" viewBox="0 0 600 300" data-testid="angle-chart" aria-hidden="true">
         <line class="stall-line" data-testid="stall-line"></line>
+        <text class="stall-annotation" data-testid="stall-annotation">Past this point, you lose both</text>
         <text class="stall-label" data-testid="stall-label">stall</text>
         <path class="corner-speed-path" data-testid="corner-speed-path"></path>
         <path class="top-speed-path" data-testid="top-speed-path"></path>
@@ -47,6 +49,12 @@ import Layout from "../layouts/Layout.astro";
         <span class="slider-end-label" aria-hidden="true">30°</span>
       </div>
       <label for="wing-angle" class="slider-label">Rear wing angle</label>
+
+      <p class="stall-insight" data-testid="stall-insight" hidden>
+        This is why every team runs a different wing angle per track. Monaco
+        needs corner grip, Monza needs top speed, and neither wants to go past
+        stall.
+      </p>
     </section>
 
     <section class="car-section" aria-labelledby="car-heading">

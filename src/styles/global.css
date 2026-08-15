@@ -93,6 +93,13 @@ header p {
   text-anchor: middle;
 }
 
+.stall-annotation {
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--ink);
+  text-anchor: middle;
+}
+
 .marker-line {
   stroke: var(--ink);
   stroke-width: 1;
@@ -163,6 +170,15 @@ header p {
   margin-top: 0.35rem;
 }
 
+.stall-insight {
+  margin: 1rem 0 0;
+  padding: 0.6rem 0.85rem;
+  border-left: 3px solid var(--stall-color);
+  background: var(--stat-bg);
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
 .car-section {
   margin-top: 2rem;
 }
@@ -177,6 +193,7 @@ header p {
 .car-scene {
   position: relative;
   width: 100%;
+  overflow: hidden;
 }
 
 .car-body {
