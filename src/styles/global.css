@@ -5,8 +5,8 @@
   --accent-dim: #e10600;
   --bg: #0d0f12;
   --bg-elevated: #16181d;
-  --corner-color: #4da3ff;
-  --top-speed-color: #ff5c8a;
+  --corner-color: #3fd0c9;
+  --top-speed-color: #f5b942;
   --stall-color: #6b6b6b;
   --stat-bg: var(--bg-elevated);
   --car-red: #c8102e;
@@ -18,7 +18,7 @@
 body {
   margin: 0;
   padding: 1.25rem 1rem 3rem;
-  font-family: Inter, system-ui, sans-serif;
+  font-family: "Titillium Web", system-ui, sans-serif;
   line-height: 1.6;
   color: var(--ink);
   background-color: var(--bg);
