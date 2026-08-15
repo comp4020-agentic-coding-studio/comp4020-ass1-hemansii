@@ -1,9 +1,5 @@
 # Process overview
 
-<!-- TEMPLATE: this file is a shape to fill in, not a form. Replace everything
-     in it with your own overview, and delete this comment — `pnpm
-     check:evidence` will remind you if it's still here. -->
-
 A reading-guide to how the work came together --- a map to your process, not an
 essay about it. Markers read this file and follow its citations; they don't
 trawl the repo for evidence you didn't point at, so if a moment mattered, cite
@@ -17,60 +13,49 @@ cover every deliverable.
 
 ## What I built
 
-One paragraph: the thing, and the idea behind it.
+An interactive explainer of F1 rear-wing angle trade-offs: one slider (0°--30°)
+drives a physically-shaped model of downforce, drag, corner speed, and top
+speed, with the slider doubling as the x-axis under a live line chart. The
+point isn't the exact numbers --- the constants are illustrative, not telemetry
+--- it's the shape: more wing buys cornering grip at the cost of straight-line
+speed, and past the wing's stall angle you lose both at once.
 
 ## The moments that mattered
 
-Three or four for an assignment; fewer is fine for a weekly prototype. Keep the
-list short so each moment has room to do all four jobs:
+1. **The drag curve was wrong in a way that looked plausible.** My first pass
+   at `dragCoefficient` kept the same `CD0 + K·CL²` drag-polar term past stall,
+   so CD *fell* from 1.24 back toward 0.90 as angle kept rising --- because the
+   post-stall lift coefficient itself declines, shrinking the CL² term faster
+   than the flat stall penalty I'd added could compensate. I caught this by eye
+   from a printed table, but the fix wasn't "add a bigger penalty": I verified
+   the failure numerically in Python first, then decoupled post-stall drag from
+   the declining CL² term entirely (`CD = CD_at_stall + climb_rate·(angle -
+   stall)`), and wrote it into a permanent regression test rather than trusting
+   eyeballing next time --- `dragPastStall` must be `>=` `dragAtStall`,
+   asserted in
+   [`7e1df08`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/7e1df08).
+   > "shouldn't drag stay high or keep rising post-stall since the flow's
+   > separated? Can you check the CD(α) curve shape specifically and tell me
+   > why it does that, or fix it if it's wrong?"
 
-1. **what happened** --- the problem, or the thing the agent got wrong
-2. **what you did instead of the obvious thing** --- the call you made, and why
-   it beat the obvious one
-3. **how you knew it was right** --- the check you ran, the viewport you looked
-   at, what you read before accepting the diff
-4. **the citation** --- a commit or commit range, a `CLAUDE.md` change, a check
-   that went from red to green, a prompt paired with the commit it produced
+2. **Scope crept in through my own wording before the agent could build it.**
+   Mid-conversation I asked for a "lap-time curve" alongside corner speed and
+   top speed --- a metric that doesn't exist in the model I'd actually locked
+   in. Rather than let the agent quietly synthesize a lap-time formula to match
+   what I'd said, it stopped in plan mode and asked whether to add lap time or
+   keep the two derived speeds; I picked the latter, which kept the model to
+   what I could actually sanity-check by hand instead of a formula neither of
+   us had verified
+   ([`7e1df08`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/7e1df08)).
 
-Jobs 2 and 3 are the ones the repo can't tell a reader on its own, so they're
-where the marks are. The strongest moments are the ones where a correction
-landed in the **harness** rather than in another prompt --- a rule added to
-`CLAUDE.md`, a check wired up, an attempt thrown away: re-prompting until it
-passes is the routine case, and changing what the agent works against is the
-skilled one.
-
-Cite each moment as a link whose text is the commit hash or range and whose
-target is this repo's commit or compare URL, so a reader clicks straight to the
-evidence:
-
-- one commit: [`a1b2c3d`](https://github.com/YOUR-ORG/YOUR-REPO/commit/a1b2c3d)
-- a range:
-  [`a1b2c3d...e4f5a6b`](https://github.com/YOUR-ORG/YOUR-REPO/compare/a1b2c3d...e4f5a6b)
-
-To pair a prompt with the commit it produced, quote the prompt (curated, not a
-full transcript) next to the citation:
-
-> the prompt, verbatim
-
-Screenshots are welcome where one carries the verification better than a
-sentence does. Commit the file to this repo and link it with a **relative**
-path, which is what makes it render on GitHub: `![alt text](docs/before.png)`.
-Images don't count towards the word count and don't replace the citation.
-
-### A worked moment, for shape
-
-Delete this section along with the rest of the boilerplate --- it's here to show
-the four jobs in one paragraph, not to be imitated in content.
-
-> The date formatter kept coming back with `toLocaleDateString()` and no locale
-> argument, so the same build rendered differently on my machine and in CI. I'd
-> already re-prompted it twice, which fixed the line but not the habit, so the
-> third time I put the rule in `CLAUDE.md` instead
-> ([`3f9ac21`](https://github.com/YOUR-ORG/YOUR-REPO/commit/3f9ac21)) and added
-> a spec test that fails on a bare `toLocaleDateString`. That's what told me it
-> had actually taken: the test went red against the old code and green against
-> the new, and the next two features it wrote passed it without prompting
-> ([`3f9ac21...b7e0d14`](https://github.com/YOUR-ORG/YOUR-REPO/compare/3f9ac21...b7e0d14)).
+3. **The Astro base-path trap is invisible until you check for it.** The
+   `stack` skill's conversion script sets the GitHub Pages `base` path from the
+   repo's origin remote, but a wrong base looks identical to a right one on
+   `localhost` and only 404s once deployed. Before committing the conversion, I
+   ran `pnpm dev` and loaded the site under `/comp4020-ass1-hemansii/` rather
+   than at the server root, confirming the page and its assets actually
+   resolved under the path the live site would use
+   ([`1e9aff7`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/1e9aff7)).
 
 ## Before you ship
 
