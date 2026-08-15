@@ -6,6 +6,10 @@
   --top-speed-color: #d6336c;
   --stall-color: #999;
   --stat-bg: #f4f5f7;
+  --chassis-color: #2a2a2a;
+  --wheel-color: #111;
+  --wing-color: #d6336c;
+  --airflow-color: #0b5fff;
 }
 
 body {
@@ -157,6 +161,64 @@ header p {
   font-size: 0.85rem;
   color: var(--muted);
   margin-top: 0.35rem;
+}
+
+.car-section {
+  margin-top: 2rem;
+}
+
+.car-section h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+
+.car-scene {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.chassis {
+  fill: var(--chassis-color);
+}
+
+.halo {
+  fill: none;
+  stroke: var(--chassis-color);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.wheel {
+  fill: var(--wheel-color);
+}
+
+.wing-strut,
+.wing-plane,
+.wing-endplate {
+  fill: var(--wing-color);
+}
+
+.airflow-line {
+  fill: none;
+  stroke: var(--airflow-color);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.75;
+}
+
+.airflow-line.separated {
+  stroke-dasharray: 3 4;
+  opacity: 0.6;
+}
+
+.car-caption {
+  color: var(--muted);
+  font-size: 0.85rem;
+  max-width: 40rem;
+  margin: 0.75rem 0 0;
 }
 
 .stat-grid {
