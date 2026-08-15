@@ -52,31 +52,33 @@ import Layout from "../layouts/Layout.astro";
     <section class="car-section" aria-labelledby="car-heading">
       <h2 id="car-heading">What the wing angle looks like</h2>
 
-      <svg class="car-scene" viewBox="0 0 600 220" data-testid="car-scene" aria-hidden="true">
-        <path
-          class="chassis"
-          d="M 580 182
-             L 530 190
-             L 505 193
-             L 415 193
-             L 390 160
-             L 350 130
-             L 310 130
-             L 270 145
-             L 230 175
-             L 210 193
-             L 100 193
-             L 95 185
-             L 95 196
-             L 580 196
-             Z"
-        ></path>
-        <path class="halo" d="M 302 131 Q 330 98 358 131"></path>
-        <circle class="wheel" cx="460" cy="162" r="34"></circle>
-        <circle class="wheel" cx="150" cy="158" r="38"></circle>
+      <div class="car-scene" data-testid="car-scene">
+        <svg class="car-body" viewBox="0 0 600 220" aria-hidden="true">
+          <path
+            class="chassis"
+            d="M 112 193
+               L 188 193
+               C 205 193 212 160 245 145
+               Q 290 122 335 116
+               Q 380 122 415 148
+               C 432 162 428 186 426 193
+               L 494 193
+               Q 515 178 545 168
+               Q 565 163 585 162
+               L 585 196
+               L 112 196
+               Z"
+          ></path>
+          <path class="halo" d="M 296 120 L 301 92 Q 322 78 347 92 Q 367 105 374 128"></path>
+          <rect class="floor" x="93" y="193" width="492" height="3"></rect>
+          <rect class="wing-strut" x="93" y="112" width="8" height="81"></rect>
+          <circle class="wheel-tyre" cx="460" cy="162" r="34"></circle>
+          <circle class="wheel-rim" cx="460" cy="162" r="14"></circle>
+          <circle class="wheel-tyre" cx="150" cy="158" r="38"></circle>
+          <circle class="wheel-rim" cx="150" cy="158" r="16"></circle>
+        </svg>
 
-        <rect class="wing-strut" x="97" y="112" width="6" height="66"></rect>
-        <g class="rear-wing" data-testid="rear-wing">
+        <svg class="wing-layer" viewBox="0 0 600 220" data-testid="rear-wing" aria-hidden="true">
           <path
             class="airflow-line"
             data-testid="airflow-line-1"
@@ -85,11 +87,11 @@ import Layout from "../layouts/Layout.astro";
             class="airflow-line"
             data-testid="airflow-line-2"
           ></path>
-          <rect class="wing-plane" x="20" y="109" width="80" height="6"></rect>
-          <rect class="wing-endplate" x="16" y="92" width="5" height="40"></rect>
-          <rect class="wing-endplate" x="95" y="97" width="5" height="30"></rect>
-        </g>
-      </svg>
+          <rect class="wing-plane" x="15" y="109" width="86" height="7"></rect>
+          <rect class="wing-endplate" x="12" y="94" width="5" height="38"></rect>
+          <rect class="wing-endplate" x="97" y="98" width="5" height="26"></rect>
+        </svg>
+      </div>
 
       <p class="car-caption">
         The rear wing tilts to the angle set by the slider above — flat at 0°,
