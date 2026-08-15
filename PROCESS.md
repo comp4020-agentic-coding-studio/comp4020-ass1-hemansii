@@ -57,6 +57,25 @@ speed, and past the wing's stall angle you lose both at once.
    resolved under the path the live site would use
    ([`1e9aff7`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/1e9aff7)).
 
+4. **A shape "fix" isn't verified until you look at the rendered pixels, not
+   the path coordinates.** My first two passes at the car-visual chassis
+   (rounded hill, then a sharper wedge) still let the silhouette overlap the
+   wheel circles, because I was reasoning from the `d` string instead of the
+   screenshot. The fix that actually held was mechanical: confine every raised
+   part of the body path to x-ranges that don't intersect either wheel's
+   x-span, then confirm it with an `agent-browser` screenshot at both marking
+   viewports rather than trusting the geometry by eye
+   ([`807b7e4`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/807b7e4)).
+
+5. **Reference art you can look at isn't reference art you can use.** I asked
+   for the car to be redrawn "in a similar style" to an uploaded F1
+   illustration, then caught that it was copyrighted fan art carrying real
+   sponsor livery (Ferrari, Shell, Santander) --- not something safe to trace
+   into a page that deploys publicly under my name. I had the agent treat it as
+   a loose proportion reference only (nose height, wheel exposure, halo shape)
+   and draw an original, unbranded silhouette from scratch instead, landing in
+   [`059c013`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/059c013).
+
 ## Before you ship
 
 `pnpm check:evidence` verifies your citations resolve to real commits, that the
