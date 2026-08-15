@@ -301,3 +301,11 @@ header p {
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+.model-disclaimer {
+  margin: 0.6rem 0 0;
+  font-size: 0.78rem;
+  font-style: italic;
+  color: var(--muted);
+  max-width: 40rem;
+}
