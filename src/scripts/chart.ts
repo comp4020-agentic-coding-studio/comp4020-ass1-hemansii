@@ -5,7 +5,7 @@ import { cornerSpeedKmh, MAX_ANGLE_DEG, STALL_ANGLE_DEG, topSpeedKmh } from "./a
 // visually reads as the chart's x-axis, not a separate control.
 const VIEW_WIDTH = 600;
 const VIEW_HEIGHT = 300;
-const MARGIN = { top: 28, right: 12, bottom: 12, left: 12 };
+const MARGIN = { top: 20, right: 12, bottom: 12, left: 12 };
 const PLOT_WIDTH = VIEW_WIDTH - MARGIN.left - MARGIN.right;
 const PLOT_HEIGHT = VIEW_HEIGHT - MARGIN.top - MARGIN.bottom;
 
@@ -61,13 +61,13 @@ export function initAngleChart(root: ParentNode): void {
   topSpeedPath.setAttribute("d", buildPath(topSpeedKmh, yForSpeed));
 
   const stallX = xForAngle(STALL_ANGLE_DEG);
-  const STALL_LINE_TOP = 18; // starts just under the annotation's baseline so the two read as one callout
+  const STALL_LINE_TOP = 11; // starts right under the annotation's baseline so the two read as one small callout
   stallLine.setAttribute("x1", String(stallX));
   stallLine.setAttribute("x2", String(stallX));
   stallLine.setAttribute("y1", String(STALL_LINE_TOP));
   stallLine.setAttribute("y2", String(MARGIN.top + PLOT_HEIGHT));
   stallAnnotation.setAttribute("x", String(stallX));
-  stallAnnotation.setAttribute("y", "14");
+  stallAnnotation.setAttribute("y", "8");
 
   const render = () => {
     const angle = Number(slider.value);
