@@ -87,12 +87,6 @@ header p {
   stroke-dasharray: 4 4;
 }
 
-.stall-label {
-  font-size: 10px;
-  fill: var(--muted);
-  text-anchor: middle;
-}
-
 .stall-annotation {
   font-size: 11px;
   font-weight: 600;
@@ -168,6 +162,18 @@ header p {
   font-size: 0.85rem;
   color: var(--muted);
   margin-top: 0.35rem;
+}
+
+.best-lap-line {
+  margin: 0.75rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.best-lap-value {
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
 }
 
 .stall-insight {

@@ -55,3 +55,16 @@ export function topSpeedKmh(angleDeg: number): number {
   const speedMs = ((2 * ENGINE_POWER) / (RHO * cd * A_FRONTAL)) ** (1 / 3);
   return speedMs * 3.6;
 }
+
+// Illustrative two-phase lap: a fixed corner-equivalent distance run at
+// cornerSpeedKmh plus a fixed straight-equivalent distance run at
+// topSpeedKmh. Not a real lap simulation --- just enough to reward
+// balancing both speeds instead of maximizing either one alone.
+const LAP_CORNER_DISTANCE_KM = 2;
+const LAP_STRAIGHT_DISTANCE_KM = 3;
+
+export function lapTimeSeconds(angleDeg: number): number {
+  const cornerTimeHours = LAP_CORNER_DISTANCE_KM / cornerSpeedKmh(angleDeg);
+  const straightTimeHours = LAP_STRAIGHT_DISTANCE_KM / topSpeedKmh(angleDeg);
+  return (cornerTimeHours + straightTimeHours) * 3600;
+}

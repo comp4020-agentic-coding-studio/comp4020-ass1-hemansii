@@ -5,7 +5,7 @@ import { cornerSpeedKmh, MAX_ANGLE_DEG, STALL_ANGLE_DEG, topSpeedKmh } from "./a
 // visually reads as the chart's x-axis, not a separate control.
 const VIEW_WIDTH = 600;
 const VIEW_HEIGHT = 300;
-const MARGIN = { top: 40, right: 12, bottom: 12, left: 12 };
+const MARGIN = { top: 28, right: 12, bottom: 12, left: 12 };
 const PLOT_WIDTH = VIEW_WIDTH - MARGIN.left - MARGIN.right;
 const PLOT_HEIGHT = VIEW_HEIGHT - MARGIN.top - MARGIN.bottom;
 
@@ -27,7 +27,6 @@ export function initAngleChart(root: ParentNode): void {
   const cornerPath = root.querySelector<SVGPathElement>('[data-testid="corner-speed-path"]');
   const topSpeedPath = root.querySelector<SVGPathElement>('[data-testid="top-speed-path"]');
   const stallLine = root.querySelector<SVGLineElement>('[data-testid="stall-line"]');
-  const stallLabel = root.querySelector<SVGTextElement>('[data-testid="stall-label"]');
   const stallAnnotation = root.querySelector<SVGTextElement>('[data-testid="stall-annotation"]');
   const markerLine = root.querySelector<SVGLineElement>('[data-testid="angle-marker-line"]');
   const cornerMarker = root.querySelector<SVGCircleElement>('[data-testid="corner-speed-marker"]');
@@ -37,7 +36,6 @@ export function initAngleChart(root: ParentNode): void {
     !cornerPath ||
     !topSpeedPath ||
     !stallLine ||
-    !stallLabel ||
     !stallAnnotation ||
     !markerLine ||
     !cornerMarker ||
@@ -63,14 +61,13 @@ export function initAngleChart(root: ParentNode): void {
   topSpeedPath.setAttribute("d", buildPath(topSpeedKmh, yForSpeed));
 
   const stallX = xForAngle(STALL_ANGLE_DEG);
+  const STALL_LINE_TOP = 18; // starts just under the annotation's baseline so the two read as one callout
   stallLine.setAttribute("x1", String(stallX));
   stallLine.setAttribute("x2", String(stallX));
-  stallLine.setAttribute("y1", String(MARGIN.top));
+  stallLine.setAttribute("y1", String(STALL_LINE_TOP));
   stallLine.setAttribute("y2", String(MARGIN.top + PLOT_HEIGHT));
-  stallLabel.setAttribute("x", String(stallX));
-  stallLabel.setAttribute("y", String(MARGIN.top - 4));
   stallAnnotation.setAttribute("x", String(stallX));
-  stallAnnotation.setAttribute("y", "16");
+  stallAnnotation.setAttribute("y", "14");
 
   const render = () => {
     const angle = Number(slider.value);
