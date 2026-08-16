@@ -1,10 +1,15 @@
 ---
 import Layout from "../layouts/Layout.astro";
+
+// Absolute, base-aware asset path. A relative "./car.png" resolves to /car.png
+// if the page is ever served as /comp4020-ass1-hemansii without the trailing
+// slash, which 404s on Pages; BASE_URL pins it to the repo subpath.
+const carImage = `${import.meta.env.BASE_URL}/car.png`;
 ---
 
 <Layout title="F1 wing angle explainer">
-  <nav aria-label="Primary">
-    <a href="./">Home</a>
+  <nav aria-label="Skip navigation">
+    <a class="skip-link" href="#main">Skip to the explainer</a>
   </nav>
   <header>
     <h1>How much wing does an F1 car need?</h1>
@@ -15,7 +20,58 @@ import Layout from "../layouts/Layout.astro";
       point where the wing stalls and you lose both at once.
     </p>
   </header>
-  <main>
+  <main id="main">
+    <section class="car-section" aria-labelledby="car-heading">
+      <h2 id="car-heading">What the air over the wing is doing</h2>
+
+      <div class="car-panel">
+        <div class="car-scene" data-testid="car-scene">
+          <img
+            class="car-image"
+            src={carImage}
+            width="2720"
+            height="1104"
+            alt="Side view of a Formula 1 car, rear wing at the left"
+          />
+          <svg class="airflow-layer" viewBox="0 0 2720 830" aria-hidden="true">
+            <defs>
+              <linearGradient id="airflow-fade" gradientUnits="userSpaceOnUse" x1="2060" x2="1450">
+                <stop offset="0" stop-color="currentColor" stop-opacity="0"></stop>
+                <stop offset="1" stop-color="currentColor" stop-opacity="1"></stop>
+              </linearGradient>
+            </defs>
+            <path class="airflow-line" data-testid="airflow-line-1" stroke="url(#airflow-fade)"></path>
+            <path class="airflow-line" data-testid="airflow-line-2" stroke="url(#airflow-fade)"></path>
+            <path class="airflow-line" data-testid="airflow-line-3" stroke="url(#airflow-fade)"></path>
+          </svg>
+        </div>
+
+        <div class="car-controls">
+          <div class="slider-row">
+            <span class="slider-end-label" aria-hidden="true">0°</span>
+            <input
+              type="range"
+              id="wing-angle"
+              data-testid="wing-angle-slider"
+              min="0"
+              max="30"
+              step="1"
+              value="9"
+            />
+            <span class="slider-end-label" aria-hidden="true">30°</span>
+          </div>
+          <label for="wing-angle" class="slider-label">Drag to adjust wing angle</label>
+        </div>
+      </div>
+
+      <p class="car-caption">
+        The wing stays at the angle it was drawn at, so what the slider changes
+        is the air. Below the stall angle the flow stays smooth and attached to
+        the wing. At or past it the flow lets go, tumbles, and the wing stops
+        working.
+      </p>
+    </section>
+
     <section class="chart-section" aria-labelledby="chart-heading">
       <h2 id="chart-heading">Corner speed and top speed vs. wing angle</h2>
 
@@ -34,21 +90,6 @@ import Layout from "../layouts/Layout.astro";
         <span class="legend-item top">Top speed</span>
       </p>
 
-      <div class="slider-row">
-        <span class="slider-end-label" aria-hidden="true">0°</span>
-        <input
-          type="range"
-          id="wing-angle"
-          data-testid="wing-angle-slider"
-          min="0"
-          max="30"
-          step="1"
-          value="9"
-        />
-        <span class="slider-end-label" aria-hidden="true">30°</span>
-      </div>
-      <label for="wing-angle" class="slider-label">Rear wing angle</label>
-
       <p class="best-lap-line">
         Best lap time found: <output for="wing-angle" data-testid="best-lap-value" class="best-lap-value"
         ></output>
@@ -58,57 +99,6 @@ import Layout from "../layouts/Layout.astro";
         This is why every team runs a different wing angle per track. Monaco
         needs corner grip, Monza needs top speed, and neither wants to go past
         stall.
-      </p>
-    </section>
-
-    <section class="car-section" aria-labelledby="car-heading">
-      <h2 id="car-heading">What the wing angle looks like</h2>
-
-      <div class="car-scene" data-testid="car-scene">
-        <svg class="car-body" viewBox="0 0 600 220" aria-hidden="true">
-          <path
-            class="chassis"
-            d="M 112 193
-               L 188 193
-               C 205 193 212 160 245 145
-               Q 290 122 335 116
-               Q 380 122 415 148
-               C 432 162 428 186 426 193
-               L 494 193
-               Q 515 178 545 168
-               Q 565 163 585 162
-               L 585 196
-               L 112 196
-               Z"
-          ></path>
-          <path class="halo" d="M 296 120 L 301 92 Q 322 78 347 92 Q 367 105 374 128"></path>
-          <rect class="floor" x="93" y="193" width="492" height="3"></rect>
-          <rect class="wing-strut" x="93" y="112" width="8" height="81"></rect>
-          <circle class="wheel-tyre" cx="460" cy="162" r="34"></circle>
-          <circle class="wheel-rim" cx="460" cy="162" r="14"></circle>
-          <circle class="wheel-tyre" cx="150" cy="158" r="38"></circle>
-          <circle class="wheel-rim" cx="150" cy="158" r="16"></circle>
-        </svg>
-
-        <svg class="wing-layer" viewBox="0 0 600 220" data-testid="rear-wing" aria-hidden="true">
-          <path
-            class="airflow-line"
-            data-testid="airflow-line-1"
-          ></path>
-          <path
-            class="airflow-line"
-            data-testid="airflow-line-2"
-          ></path>
-          <rect class="wing-plane" x="15" y="109" width="86" height="7"></rect>
-          <rect class="wing-endplate" x="12" y="94" width="5" height="38"></rect>
-          <rect class="wing-endplate" x="97" y="98" width="5" height="26"></rect>
-        </svg>
-      </div>
-
-      <p class="car-caption">
-        The rear wing tilts to the angle set by the slider above, flat at 0°
-        and steepest at 30°. Airflow over the wing stays smooth until the
-        wing stalls, then breaks up.
       </p>
     </section>
 

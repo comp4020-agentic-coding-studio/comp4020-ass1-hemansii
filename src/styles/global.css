@@ -9,16 +9,24 @@
   --top-speed-color: #f5b942;
   --stall-color: #6b6b6b;
   --stat-bg: var(--bg-elevated);
-  --car-red: #c8102e;
-  --car-dark: #202124;
-  --car-rim: #cfd2d6;
-  --airflow-color: #0b5fff;
+  --airflow-attached: #4da3ff;
+  --airflow-separated: #ff5252;
+
+  /* Orbitron stands in for Redline (wide techno display), Chakra Petch for
+     Automove (uppercase racing caps). Both are Google-hosted so they actually
+     ship with the deployed page instead of falling back on the marker's
+     machine. Body copy stays on Titillium Web --- neither display face is
+     readable at paragraph size. */
+  --font-display: "Orbitron", system-ui, sans-serif;
+  --font-label: "Chakra Petch", system-ui, sans-serif;
+  --font-body: "Titillium Web", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
 body {
   margin: 0;
   padding: 1.25rem 1rem 3rem;
-  font-family: "Titillium Web", system-ui, sans-serif;
+  font-family: var(--font-body);
   line-height: 1.6;
   color: var(--ink);
   background-color: var(--bg);
@@ -29,7 +37,7 @@ body {
 
 h1,
 h2 {
-  font-family: "Titillium Web", system-ui, sans-serif;
+  font-family: var(--font-display);
 }
 
 nav,
@@ -39,30 +47,49 @@ main {
   margin-inline: auto;
 }
 
+/* Collapsed by default: the skip link is out of flow until focused, so the
+   landmark should not reserve blank space above the heading. */
 nav {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
 }
 
-nav a {
-  font-family: "Titillium Web", system-ui, sans-serif;
-  color: var(--accent);
-  text-decoration: none;
+nav:focus-within {
+  margin-bottom: 1rem;
+}
+
+/* The single-page site has nothing to navigate to, but the spec requires a
+   navigation landmark --- so the landmark carries a skip link instead of a
+   redundant self-referencing "Home". Hidden until it takes keyboard focus. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.skip-link:focus-visible {
+  position: static;
+  width: auto;
+  height: auto;
+  display: inline-block;
+  font-family: var(--font-label);
+  font-size: 0.78rem;
   font-weight: 600;
-  border-bottom: 2px solid transparent;
-  padding-bottom: 2px;
-  transition: border-color 0.15s ease, color 0.15s ease;
-}
-
-nav a:hover,
-nav a:focus-visible {
-  border-color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--accent);
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.3rem;
+  text-decoration: none;
 }
 
 header h1 {
   margin-bottom: 0.5rem;
-  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-size: clamp(1.15rem, 3.1vw, 1.85rem);
   font-weight: 700;
-  letter-spacing: -0.01em;
+  line-height: 1.3;
 }
 
 header p {
@@ -75,8 +102,10 @@ header p {
 }
 
 .chart-section h2 {
-  font-size: 1rem;
+  font-size: 0.82rem;
   font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
   color: var(--muted);
   margin-bottom: 0.75rem;
 }
@@ -140,7 +169,10 @@ header p {
 .legend-item {
   position: relative;
   padding-left: 1.25rem;
-  font-family: "Titillium Web", system-ui, sans-serif;
+  font-family: var(--font-label);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.78rem;
 }
 
 .legend-item::before {
@@ -169,7 +201,7 @@ header p {
 
 .slider-end-label {
   flex: 0 0 auto;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--font-mono);
   font-size: 0.8rem;
   color: var(--muted);
 }
@@ -178,71 +210,96 @@ header p {
   flex: 1 1 auto;
   width: 100%;
   appearance: none;
-  height: 4px;
-  border-radius: 2px;
-  background: #232630;
+  height: 22px;
+  background: transparent;
   outline: none;
   cursor: pointer;
 }
 
+.slider-row input[type="range"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* Machined groove: a tick every 3deg, and the stall angle (18 of 30, so 60%
+   along) marked in red so the control carries the chart's landmark too. */
 .slider-row input[type="range"]::-webkit-slider-runnable-track {
-  height: 4px;
-  border-radius: 2px;
-  background: #232630;
+  height: 6px;
+  border: 0;
+  border-radius: 3px;
+  background:
+    linear-gradient(90deg, transparent calc(60% - 1px), var(--accent) calc(60% - 1px), var(--accent) calc(60% + 1px), transparent calc(60% + 1px)),
+    repeating-linear-gradient(90deg, rgb(255 255 255 / 20%) 0 1px, transparent 1px 10%),
+    linear-gradient(180deg, #090b0f, #1e222c);
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 80%);
 }
 
 .slider-row input[type="range"]::-moz-range-track {
-  height: 4px;
-  border-radius: 2px;
-  background: #232630;
+  height: 6px;
+  border: 0;
+  border-radius: 3px;
+  background:
+    linear-gradient(90deg, transparent calc(60% - 1px), var(--accent) calc(60% - 1px), var(--accent) calc(60% + 1px), transparent calc(60% + 1px)),
+    repeating-linear-gradient(90deg, rgb(255 255 255 / 20%) 0 1px, transparent 1px 10%),
+    linear-gradient(180deg, #090b0f, #1e222c);
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 80%);
 }
 
 .slider-row input[type="range"]::-webkit-slider-thumb {
   appearance: none;
-  width: 16px;
-  height: 16px;
-  margin-top: -6px;
+  margin-top: -7px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: var(--accent-dim);
-  border: 2px solid var(--ink);
-  box-shadow: 0 0 0 0 rgb(255 59 59 / 0%);
-  transition: box-shadow 0.15s ease, background-color 0.15s ease;
-  cursor: pointer;
+  background: radial-gradient(circle at 50% 32%, #ff7a7a, var(--accent-dim) 62%, #7d0000);
+  border: 2px solid rgb(255 255 255 / 85%);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 70%);
+  transition: box-shadow 0.15s ease, transform 0.12s ease;
+  cursor: grab;
 }
 
 .slider-row input[type="range"]::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: var(--accent-dim);
-  border: 2px solid var(--ink);
-  box-shadow: 0 0 0 0 rgb(255 59 59 / 0%);
-  transition: box-shadow 0.15s ease, background-color 0.15s ease;
-  cursor: pointer;
+  background: radial-gradient(circle at 50% 32%, #ff7a7a, var(--accent-dim) 62%, #7d0000);
+  border: 2px solid rgb(255 255 255 / 85%);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 70%);
+  transition: box-shadow 0.15s ease, transform 0.12s ease;
+  cursor: grab;
 }
 
 .slider-row input[type="range"]:hover::-webkit-slider-thumb,
 .slider-row input[type="range"]:focus-visible::-webkit-slider-thumb {
-  background: var(--accent);
-  box-shadow: 0 0 0 6px rgb(255 59 59 / 25%);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 70%), 0 0 0 7px rgb(255 59 59 / 22%);
 }
 
 .slider-row input[type="range"]:hover::-moz-range-thumb,
 .slider-row input[type="range"]:focus-visible::-moz-range-thumb {
-  background: var(--accent);
-  box-shadow: 0 0 0 6px rgb(255 59 59 / 25%);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 70%), 0 0 0 7px rgb(255 59 59 / 22%);
+}
+
+.slider-row input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(0.94);
+  cursor: grabbing;
+}
+
+.slider-row input[type="range"]:active::-moz-range-thumb {
+  transform: scale(0.94);
+  cursor: grabbing;
 }
 
 .slider-label {
   display: block;
   text-align: center;
-  font-family: "Titillium Web", system-ui, sans-serif;
-  font-size: 0.8rem;
+  font-family: var(--font-label);
+  font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-top: 0.35rem;
+  margin-top: 0.55rem;
 }
 
 .best-lap-line {
@@ -252,7 +309,7 @@ header p {
 }
 
 .best-lap-value {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--font-mono);
   font-weight: 600;
   color: var(--accent);
   font-variant-numeric: tabular-nums;
@@ -268,82 +325,79 @@ header p {
 }
 
 .car-section {
-  margin-top: 2rem;
+  margin-top: 1.5rem;
 }
 
 .car-section h2 {
-  font-size: 1rem;
+  font-size: 0.82rem;
   font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
   color: var(--muted);
   margin-bottom: 0.75rem;
 }
 
-.car-scene {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  background: #f4f5f7;
-  border-radius: 0.5rem;
+/* The drawing and its slider share one panel so the control reads as part of
+   the car rather than a separate widget parked underneath it. */
+.car-panel {
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 0.75rem;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgb(255 255 255 / 5%), transparent 62%),
+    linear-gradient(180deg, #15171d, #0f1115);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 45%);
+  padding: 0.5rem 0.9rem 1rem;
 }
 
-.car-body {
+/* car.png carries ~266px of transparent headroom above the car and ~296px of
+   dead space below it. Cropping to the top 830 of its 1104 keeps the headroom
+   the airflow lines live in and drops the empty tail. The overlay's viewBox is
+   that same crop, so image and lines stay locked together at any width. */
+.car-scene {
+  position: relative;
+  aspect-ratio: 2720 / 830;
+  overflow: hidden;
+}
+
+.car-image {
   display: block;
   width: 100%;
   height: auto;
 }
 
-.wing-layer {
+.airflow-layer {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  transform-box: view-box;
-  transform-origin: 99px 112px;
+  color: var(--airflow-attached);
+  transition: color 0.25s ease;
 }
 
-.chassis {
-  fill: var(--car-red);
+.car-scene.stalled .airflow-layer {
+  color: var(--airflow-separated);
 }
 
-.halo {
-  fill: none;
-  stroke: var(--car-dark);
-  stroke-width: 4;
-  stroke-linecap: round;
-}
-
-.floor,
-.wing-strut {
-  fill: var(--car-dark);
-}
-
-.wheel-tyre {
-  fill: var(--car-dark);
-}
-
-.wheel-rim {
-  fill: var(--car-rim);
-}
-
-.wing-plane {
-  fill: var(--car-dark);
-}
-
-.wing-endplate {
-  fill: var(--car-red);
-}
-
+/* Dash cycles of 120 and 60 both divide the 240 of travel, so the loop stays
+   seamless in either state. */
 .airflow-line {
   fill: none;
-  stroke: var(--airflow-color);
-  stroke-width: 2;
+  stroke-width: 2.5;
   stroke-linecap: round;
-  opacity: 0.75;
+  stroke-dasharray: 80 40;
+  vector-effect: non-scaling-stroke;
+  animation: airflow-drift 1.6s linear infinite;
 }
 
-.airflow-line.separated {
-  stroke-dasharray: 3 4;
-  opacity: 0.6;
+.car-scene.stalled .airflow-line {
+  stroke-dasharray: 30 30;
+  animation-duration: 0.7s;
+}
+
+@keyframes airflow-drift {
+  to {
+    stroke-dashoffset: -240;
+  }
 }
 
 .car-caption {
@@ -379,7 +433,7 @@ header p {
 }
 
 .stat-label {
-  font-family: "Titillium Web", system-ui, sans-serif;
+  font-family: var(--font-label);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -388,7 +442,7 @@ header p {
 }
 
 .stat-value {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--font-mono);
   font-size: 1.4rem;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -408,4 +462,14 @@ header p {
   font-style: italic;
   color: var(--muted);
   max-width: 40rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
