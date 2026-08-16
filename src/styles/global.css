@@ -53,9 +53,17 @@ h2 {
 
 nav,
 header,
-main {
+main,
+footer {
   max-width: 56rem;
   margin-inline: auto;
+}
+
+.site-footer {
+  margin-top: 2rem;
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-align: center;
 }
 
 /* Collapsed by default: the skip link is out of flow until focused, so the
