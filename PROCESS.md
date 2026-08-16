@@ -15,12 +15,15 @@ cover every deliverable.
 
 An interactive explainer of F1 rear-wing angle trade-offs: one slider (0°--30°)
 drives a physically-shaped model of downforce, drag, corner speed, and top
-speed. The slider sits beneath a hand-drawn car whose airflow answers it ---
-slow, straight and blue at shallow angles, fast, tumbling and red once the wing
-stalls --- and the same value drives a live line chart below it. The point
-isn't the exact numbers --- the constants are illustrative, not telemetry ---
-it's the shape: tilting the wing steeper buys cornering grip at the cost of
-straight-line speed, and past the wing's stall angle you lose both at once.
+speed. The slider sits beneath a hand-drawn car whose airflow answers it --- a
+single glowing streak arcing over the body, slow, smooth and blue at shallow
+angles, fast, rippling and red once the wing stalls --- with arrows on the rear
+axle that grow and shrink with the load. The same value drives a live line chart
+below it, and a collapsible section at the foot of the page sets out the four
+relationships behind the numbers. The point isn't the exact numbers --- the
+constants are illustrative, not telemetry --- it's the shape: tilting the wing
+steeper buys cornering grip at the cost of straight-line speed, and past the
+wing's stall angle you lose both at once.
 
 ## The moments that mattered
 
@@ -152,6 +155,56 @@ straight-line speed, and past the wing's stall angle you lose both at once.
     ([`698cabb`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/698cabb)).
     > "line speed and waviness still jump suddenly at the stall point instead
     > of transitioning gradually"
+
+12. **I misread my own drawing, and the check was to go and look at it.** I
+    told the agent the downforce arrows were sitting on the front wheel and
+    to move them to the rear, where the wing's load actually acts. Instead of
+    doing it, it cropped `public/car.png` and read the two ends off the
+    artwork: the low-x end has the tall rear-wing box, the halo hoop and the
+    wider rear tyre; the high-x end has the long nose and the flat front
+    wing. The car faces right, so the arrows were already on the rear wheel.
+    Obeying me would have put them on the front; ignoring me would have left
+    a real complaint unanswered, because they *were* far enough forward to
+    read as front. Shifting them back to straddle the rear-wheel centre under
+    the wing answered what I meant rather than what I said
+    ([`56d24ff`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/56d24ff)).
+    > "move the downforce arrows from the front wheel to the rear wheel/wing
+    > area, that's where the wing's downforce actually acts"
+
+13. **The accessible version of my instruction was not the literal one.** I
+    asked for `aria-live="polite"` on the four stat displays and an
+    `aria-label` on the slider carrying its current value. Done literally,
+    both produce markup that reviews as correct and announces badly. The stat
+    values were `<output>` elements, which carry an implicit `role="status"`
+    --- they were already live regions before I asked --- so adding
+    `aria-live` to each would have announced a bare "4253 N" with no way to
+    tell which of four numbers had moved. Moving the region up to the card,
+    adding `aria-atomic`, and demoting the `<output>`s to spans is what makes
+    it say "Downforce 4253 N". The slider's value likewise belongs in
+    `aria-valuetext` rather than the label: `aria-valuetext` is what a screen
+    reader re-reads on every change, while an accessible name that shifts
+    under the user isn't re-announced at all. The label instead opens with
+    the visible label's exact words, because `aria-label` overrides `<label>`
+    and WCAG 2.5.3 wants the name to contain what's on screen
+    ([`6d5f4f5`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/6d5f4f5)).
+
+14. **Two contradictory notes from me were both correct at once.** First I
+    said the box behind the car didn't match the car's greys; once it did, I
+    said it no longer matched the rest of the page. Sampling `public/car.png`
+    showed why both were true: the drawing's greys are `#403338`, hsl(337 11%
+    22%) --- a warm plum --- against a panel of `#15171d`, a cool blue-grey.
+    Opposed hues, not a brightness problem, which is why it read as two
+    different materials rather than as too light or too dark. The car is warm
+    and the page is cool, so no single flat colour could satisfy both notes
+    and chasing either one was always going to break the other. The fix was
+    to stop treating it as a colour at all: the panel became a lit garage
+    bay, base in the page's cool family with a warm overhead light pooled
+    where the car sits, over a coarser carbon weave than the body's
+    ([`63eaa7a`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/63eaa7a),
+    then
+    [`6d5f4f5`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/6d5f4f5)).
+    > "now that box does not match with the rest of the color palette of the
+    > webpage"
 
 ## Before you ship
 
