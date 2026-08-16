@@ -72,6 +72,25 @@ const carImage = `${import.meta.env.BASE_URL}/car.png`;
             <span class="slider-end-label" aria-hidden="true">30°</span>
           </div>
           <label for="wing-angle" class="slider-label">Drag to adjust wing angle</label>
+
+          {/* Shortcuts to two slider positions, not a second control: they
+              dispatch input on the slider itself, so the car, chart and stats
+              answer them exactly as they answer a drag. */}
+          <div class="preset-row">
+            <span class="preset-row-label">Or jump to a real setup</span>
+            <button
+              type="button"
+              class="preset"
+              data-testid="preset-monza"
+              aria-label="Monza: 3 degrees, the least wing, for top speed down the straights"
+            >Monza</button>
+            <button
+              type="button"
+              class="preset"
+              data-testid="preset-monaco"
+              aria-label="Monaco: 17 degrees, near the most wing the flow will still hold, for grip through the corners"
+            >Monaco</button>
+          </div>
         </div>
       </div>
 

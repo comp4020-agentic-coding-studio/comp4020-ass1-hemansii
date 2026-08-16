@@ -103,9 +103,10 @@ header h1 {
   line-height: 1.3;
 }
 
+/* No max-width: the intro runs the full 56rem column so its right edge lands on
+   the car panel's, the same reason .car-caption doesn't carry one either. */
 header p {
   color: var(--muted);
-  max-width: 40rem;
 }
 
 .chart-section {
@@ -450,6 +451,57 @@ header p {
     transparent
   );
   opacity: 0.7;
+}
+
+.preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.preset-row-label {
+  font-family: var(--font-label);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.preset {
+  padding: 0.22rem 0.7rem;
+  font-family: var(--font-label);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: rgb(255 255 255 / 5%);
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.preset:hover {
+  background: rgb(255 255 255 / 9%);
+  border-color: rgb(255 59 59 / 45%);
+}
+
+.preset:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Lit only while the slider is actually sitting on that setup, so it reads as
+   "you are here" rather than "you picked this". */
+.preset[aria-pressed="true"] {
+  color: var(--accent);
+  background: rgb(255 59 59 / 12%);
+  border-color: rgb(255 59 59 / 55%);
 }
 
 /* car.png carries ~266px of transparent headroom above the car and ~296px of
