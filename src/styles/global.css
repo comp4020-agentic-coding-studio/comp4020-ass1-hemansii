@@ -9,8 +9,17 @@
   --top-speed-color: #f5b942;
   --stall-color: #6b6b6b;
   --stat-bg: var(--bg-elevated);
-  --airflow-attached: #4da3ff;
-  --airflow-separated: #ff5252;
+
+  /* car.ts drives --flow-hue from 212 (blue) to 360 (red) as the wing angle
+     approaches stall; the sweep passes through violet on the way. */
+  --flow-hue: 212;
+
+  /* non-scaling-stroke holds these at a literal pixel size, so they have to
+     scale with the viewport by hand --- at 390px the desktop weight fuses the
+     three streaks into one band. */
+  --flow-stroke: clamp(1.4px, 0.22vw, 3px);
+  --flow-glow-core: clamp(1px, 0.16vw, 2px);
+  --flow-glow-halo: clamp(2.5px, 0.55vw, 7px);
 
   /* Orbitron stands in for Redline (wide techno display), Chakra Petch for
      Automove (uppercase racing caps). Both are Google-hosted so they actually
@@ -145,17 +154,14 @@ header p {
   stroke: var(--ink);
   stroke-width: 1;
   opacity: 0.6;
-  transition: x1 0.15s ease, x2 0.15s ease;
 }
 
 .corner-speed-marker {
   fill: var(--corner-color);
-  transition: cx 0.15s ease, cy 0.15s ease;
 }
 
 .top-speed-marker {
   fill: var(--top-speed-color);
-  transition: cx 0.15s ease, cy 0.15s ease;
 }
 
 .chart-legend {
@@ -249,23 +255,35 @@ header p {
 .slider-row input[type="range"]::-webkit-slider-thumb {
   appearance: none;
   margin-top: -7px;
+  box-sizing: border-box;
   width: 20px;
   height: 20px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 32%, #ff7a7a, var(--accent-dim) 62%, #7d0000);
-  border: 2px solid rgb(255 255 255 / 85%);
-  box-shadow: 0 2px 6px rgb(0 0 0 / 70%);
+  border-radius: 5px;
+
+  /* Chequered flag: one conic tile is a 2x2 check, tiled 2x2 across the
+     thumb, so it reads as a fine 4x4 chequer at 20px. */
+  background-color: #fff;
+  background-image: conic-gradient(#fff 0 25%, #111 0 50%, #fff 0 75%, #111 0);
+  background-size: 10px 10px;
+  border: 1.5px solid rgb(255 255 255 / 75%);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 75%);
   transition: box-shadow 0.15s ease, transform 0.12s ease;
   cursor: grab;
 }
 
 .slider-row input[type="range"]::-moz-range-thumb {
+  box-sizing: border-box;
   width: 20px;
   height: 20px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 32%, #ff7a7a, var(--accent-dim) 62%, #7d0000);
-  border: 2px solid rgb(255 255 255 / 85%);
-  box-shadow: 0 2px 6px rgb(0 0 0 / 70%);
+  border-radius: 5px;
+
+  /* Chequered flag: one conic tile is a 2x2 check, tiled 2x2 across the
+     thumb, so it reads as a fine 4x4 chequer at 20px. */
+  background-color: #fff;
+  background-image: conic-gradient(#fff 0 25%, #111 0 50%, #fff 0 75%, #111 0);
+  background-size: 10px 10px;
+  border: 1.5px solid rgb(255 255 255 / 75%);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 75%);
   transition: box-shadow 0.15s ease, transform 0.12s ease;
   cursor: grab;
 }
@@ -370,34 +388,26 @@ header p {
   inset: 0;
   width: 100%;
   height: 100%;
-  color: var(--airflow-attached);
-  transition: color 0.25s ease;
+  color: hsl(var(--flow-hue) 95% 66%);
+
+  /* Two-stop bloom: a tight core plus a wide halo, both in the current flow
+     colour, so the strokes read as glowing streaks rather than flat lines. */
+  filter:
+    drop-shadow(0 0 var(--flow-glow-core) currentcolor)
+    drop-shadow(0 0 var(--flow-glow-halo) currentcolor);
 }
 
-.car-scene.stalled .airflow-layer {
-  color: var(--airflow-separated);
-}
-
-/* Dash cycles of 120 and 60 both divide the 240 of travel, so the loop stays
-   seamless in either state. */
+/* Long strokes with round caps, so each line reads as a continuous motion
+   trail rather than a row of ticks. */
 .airflow-line {
   fill: none;
-  stroke-width: 2.5;
+  stroke-width: var(--flow-stroke);
   stroke-linecap: round;
-  stroke-dasharray: 80 40;
+  stroke-linejoin: round;
+
+  /* 760 + 340 = the DASH_CYCLE car.ts integrates its phase against. */
+  stroke-dasharray: 760 340;
   vector-effect: non-scaling-stroke;
-  animation: airflow-drift 1.6s linear infinite;
-}
-
-.car-scene.stalled .airflow-line {
-  stroke-dasharray: 30 30;
-  animation-duration: 0.7s;
-}
-
-@keyframes airflow-drift {
-  to {
-    stroke-dashoffset: -240;
-  }
 }
 
 .car-caption {
