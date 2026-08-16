@@ -15,10 +15,12 @@ cover every deliverable.
 
 An interactive explainer of F1 rear-wing angle trade-offs: one slider (0°--30°)
 drives a physically-shaped model of downforce, drag, corner speed, and top
-speed, with the slider doubling as the x-axis under a live line chart. The
-point isn't the exact numbers --- the constants are illustrative, not telemetry
---- it's the shape: more wing buys cornering grip at the cost of straight-line
-speed, and past the wing's stall angle you lose both at once.
+speed. The slider sits beneath a hand-drawn car whose airflow answers it ---
+slow, straight and blue at shallow angles, fast, tumbling and red once the wing
+stalls --- and the same value drives a live line chart below it. The point
+isn't the exact numbers --- the constants are illustrative, not telemetry ---
+it's the shape: tilting the wing steeper buys cornering grip at the cost of
+straight-line speed, and past the wing's stall angle you lose both at once.
 
 ## The moments that mattered
 
@@ -88,6 +90,68 @@ speed, and past the wing's stall angle you lose both at once.
    `scrollWidth` across the full angle range instead of trusting that
    `viewBox` + responsive width already made resize safe
    ([`5b01cbb`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/5b01cbb)).
+
+7. **A font in the stylesheet is not a font on the page.** The dark-theme pass
+   read as correct in the diff and in a screenshot, so I shipped it
+   ([`1b96a9b`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/1b96a9b)).
+   Looking at the actual page, only the headings had changed. The cause was
+   invisible in review: body copy declared `Inter`, which was never in the
+   Google Fonts request, so it fell back to the system sans while the
+   `font-family` line read as deliberate. The one-line fix mattered less than
+   the check I didn't have --- `document.fonts.check()` in the browser, not the
+   stylesheet, is what tells you a typeface actually loaded
+   ([`d894afc`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/d894afc)).
+   > "You did not change the font it does not match the theme"
+
+8. **The fonts I picked couldn't legally ship.** I asked for Redline for the
+   headings and Automove for everything else. Neither is on Google Fonts, so
+   both would have to be committed into a repo that goes public and served to
+   every visitor --- redistribution, which donationware and personal-use-only
+   licences don't cover. Automove is also uppercase-only display type its own
+   foundry recommends against body text, so "everything else" would have made
+   the explainer unreadable at paragraph size. I took Google-hosted stand-ins
+   with the same character (Orbitron, Chakra Petch) and kept body copy on a
+   text face
+   ([`0432167`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/0432167)).
+   > "use the font "REDLINE" as the headers etc and "AUTOMOVE" for any other
+   > info"
+
+9. **"Works locally" can mean "works because of a file only I have."** The car
+   image rendered on my machine and showed a broken icon on the deploy. I gave
+   three hypotheses to rule out: filename case, the Pages base path, and
+   whether the file was actually committed. The first two were clean; `public/`
+   was untracked, so every build except mine had no image to copy into `dist/`.
+   Checking the base path anyway surfaced a second, latent bug --- the relative
+   `./car.png` resolves to `/car.png` if the page is ever served without its
+   trailing slash --- so it moved to an absolute `import.meta.env.BASE_URL`
+   path before it could bite
+   ([`0432167`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/0432167)).
+   > "Confirm the file is actually committed and not just sitting locally."
+
+10. **A shipped invariant outranked my instruction, and both survived.** I
+    asked for the "Home" link gone from the top of the page.
+    `spec/invariants.test.ts` requires a `<nav>` landmark, so deleting the
+    element would have turned a green check red to satisfy a cosmetic request,
+    and silently keeping the link would have ignored me. Removing the
+    redundant self-link and putting a skip link in the landmark did both:
+    nothing visible at the top, check still green, and the page keyboard-
+    navigable in a way it wasn't before
+    ([`0432167`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/0432167)).
+
+11. **Continuous in the code is not continuous to the eye.** The airflow
+    switched colour, speed and waviness at exactly the stall angle and read as
+    three toggles firing together. Fixing it was structural rather than
+    numeric: the streamlines are now generated at runtime from the drawing's
+    own contour instead of swapped between two pre-baked path arrays, and the
+    dash phase is integrated per frame rather than handed to a CSS animation,
+    because changing `animation-duration` mid-drag jumps the animation to a new
+    position instead of bending its speed. Even then the last degrees before
+    stall measured only 15% slower than stalled, which I couldn't see at all;
+    easing the speed curve widened that to 38%. Measuring the gap was the only
+    reason I knew "smooth" still wasn't legible
+    ([`698cabb`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-hemansii/commit/698cabb)).
+    > "line speed and waviness still jump suddenly at the stall point instead
+    > of transitioning gradually"
 
 ## Before you ship
 

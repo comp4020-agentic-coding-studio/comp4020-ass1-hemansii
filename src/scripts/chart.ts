@@ -4,7 +4,11 @@ import { cornerSpeedKmh, MAX_ANGLE_DEG, STALL_ANGLE_DEG, topSpeedKmh } from "./a
 // the slider is styled to span the same horizontal extent as PLOT so it
 // visually reads as the chart's x-axis, not a separate control.
 const VIEW_WIDTH = 600;
-const VIEW_HEIGHT = 300;
+// Height only sets how tall the chart renders: the SVG scales on width, so
+// shortening this shrinks the plot without shrinking the annotation text.
+// Kept deliberately squat so the best-lap line and stat cards sit closer to
+// the chart instead of a scroll below it.
+const VIEW_HEIGHT = 210;
 const MARGIN = { top: 20, right: 12, bottom: 12, left: 12 };
 const PLOT_WIDTH = VIEW_WIDTH - MARGIN.left - MARGIN.right;
 const PLOT_HEIGHT = VIEW_HEIGHT - MARGIN.top - MARGIN.bottom;

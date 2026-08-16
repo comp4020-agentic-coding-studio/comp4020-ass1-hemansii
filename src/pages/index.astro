@@ -35,16 +35,19 @@ const carImage = `${import.meta.env.BASE_URL}/car.png`;
             height="1104"
             alt="Side view of a Formula 1 car, rear wing at the left"
           />
+          <svg class="downforce-layer" viewBox="0 0 2720 830" aria-hidden="true">
+            <path class="downforce-arrow" data-testid="downforce-arrow-1"></path>
+            <path class="downforce-arrow" data-testid="downforce-arrow-2"></path>
+          </svg>
           <svg class="airflow-layer" viewBox="0 0 2720 830" aria-hidden="true">
             <defs>
-              <linearGradient id="airflow-fade" gradientUnits="userSpaceOnUse" x1="2060" x2="1450">
+              <linearGradient id="airflow-fade" gradientUnits="userSpaceOnUse" x1="2650" x2="2100">
                 <stop offset="0" stop-color="currentColor" stop-opacity="0"></stop>
                 <stop offset="1" stop-color="currentColor" stop-opacity="1"></stop>
               </linearGradient>
             </defs>
-            <path class="airflow-line" data-testid="airflow-line-1" stroke="url(#airflow-fade)"></path>
-            <path class="airflow-line" data-testid="airflow-line-2" stroke="url(#airflow-fade)"></path>
-            <path class="airflow-line" data-testid="airflow-line-3" stroke="url(#airflow-fade)"></path>
+            <path class="airflow-streak bloom" data-testid="airflow-bloom" stroke="url(#airflow-fade)"></path>
+            <path class="airflow-streak core" data-testid="airflow-streak" stroke="url(#airflow-fade)"></path>
           </svg>
         </div>
 
@@ -77,7 +80,7 @@ const carImage = `${import.meta.env.BASE_URL}/car.png`;
     <section class="chart-section" aria-labelledby="chart-heading">
       <h2 id="chart-heading">Corner speed and top speed vs. wing angle</h2>
 
-      <svg class="angle-chart" viewBox="0 0 600 300" data-testid="angle-chart" aria-hidden="true">
+      <svg class="angle-chart" viewBox="0 0 600 210" data-testid="angle-chart" aria-hidden="true">
         <line class="stall-line" data-testid="stall-line"></line>
         <text class="stall-annotation" data-testid="stall-annotation">Stall — past this point, you lose both</text>
         <path class="corner-speed-path" data-testid="corner-speed-path"></path>
@@ -87,15 +90,17 @@ const carImage = `${import.meta.env.BASE_URL}/car.png`;
         <circle class="top-speed-marker" data-testid="top-speed-marker" r="4"></circle>
       </svg>
 
-      <p class="chart-legend">
-        <span class="legend-item corner">Corner speed</span>
-        <span class="legend-item top">Top speed</span>
-      </p>
+      <div class="chart-meta">
+        <p class="chart-legend">
+          <span class="legend-item corner">Corner speed</span>
+          <span class="legend-item top">Top speed</span>
+        </p>
 
-      <p class="best-lap-line">
-        Best lap time found: <output for="wing-angle" data-testid="best-lap-value" class="best-lap-value"
-        ></output>
-      </p>
+        <p class="best-lap-line">
+          Best lap time found: <output for="wing-angle" data-testid="best-lap-value" class="best-lap-value"
+          ></output>
+        </p>
+      </div>
 
       <p class="stall-insight" data-testid="stall-insight" hidden>
         This is why every team runs a different wing angle per track. Monaco

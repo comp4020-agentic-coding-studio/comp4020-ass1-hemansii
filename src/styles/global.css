@@ -15,11 +15,13 @@
   --flow-hue: 212;
 
   /* non-scaling-stroke holds these at a literal pixel size, so they have to
-     scale with the viewport by hand --- at 390px the desktop weight fuses the
-     three streaks into one band. */
-  --flow-stroke: clamp(1.4px, 0.22vw, 3px);
+     scale with the viewport by hand --- a fixed desktop weight swamps the car
+     at 390px. --flow-bloom is the wide, faint pass under the bright core that
+     gives the streak its light-trail falloff. */
+  --flow-stroke: clamp(1.6px, 0.26vw, 3.5px);
+  --flow-bloom: clamp(5px, 0.95vw, 13px);
   --flow-glow-core: clamp(1px, 0.16vw, 2px);
-  --flow-glow-halo: clamp(2.5px, 0.55vw, 7px);
+  --flow-glow-halo: clamp(3px, 0.7vw, 9px);
 
   /* Orbitron stands in for Redline (wide techno display), Chakra Petch for
      Automove (uppercase racing caps). Both are Google-hosted so they actually
@@ -107,11 +109,11 @@ header p {
 }
 
 .chart-section {
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
 }
 
 .chart-section h2 {
-  font-size: 0.82rem;
+  font-size: 1rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   line-height: 1.5;
@@ -164,12 +166,23 @@ header p {
   fill: var(--top-speed-color);
 }
 
+/* Legend left, best-lap right, sharing one baseline. Wrapping drops the
+   best-lap to its own line at flex-start rather than stranding it right. */
+.chart-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 1.25rem;
+  margin: 0.4rem 0 0.6rem;
+}
+
 .chart-legend {
   display: flex;
   gap: 1.25rem;
   font-size: 0.85rem;
   color: var(--muted);
-  margin: 0.5rem 0 1rem;
+  margin: 0;
 }
 
 .legend-item {
@@ -321,14 +334,20 @@ header p {
 }
 
 .best-lap-line {
-  margin: 0.75rem 0 0;
-  font-size: 0.85rem;
+  margin: 0;
+  font-family: var(--font-label);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--muted);
 }
 
 .best-lap-value {
   font-family: var(--font-mono);
+  font-size: 0.85rem;
   font-weight: 600;
+  letter-spacing: 0;
   color: var(--accent);
   font-variant-numeric: tabular-nums;
 }
@@ -347,7 +366,7 @@ header p {
 }
 
 .car-section h2 {
-  font-size: 0.82rem;
+  font-size: 1rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   line-height: 1.5;
@@ -383,6 +402,24 @@ header p {
   height: auto;
 }
 
+/* Downforce arrows share the scene, the viewBox and the slider with the
+   airflow, but sit in the clear pocket above the rear wheel so the two never
+   collide. Same hue-ramp idea, deliberately a different part of the wheel
+   (green to yellow) so force and flow don't read as the same quantity. */
+.downforce-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: hsl(var(--downforce-hue, 145) 85% 58%);
+  opacity: var(--downforce-strength, 0.12);
+  filter: drop-shadow(0 0 var(--flow-glow-core) currentcolor);
+}
+
+.downforce-arrow {
+  fill: currentcolor;
+}
+
 .airflow-layer {
   position: absolute;
   inset: 0;
@@ -397,23 +434,35 @@ header p {
     drop-shadow(0 0 var(--flow-glow-halo) currentcolor);
 }
 
-/* Long strokes with round caps, so each line reads as a continuous motion
-   trail rather than a row of ticks. */
-.airflow-line {
+/* One arc, painted twice from the same geometry: a wide faint bloom under a
+   thin bright core. Stacking them is what makes a flat stroke read as a light
+   trail, and both keep a constant width so the streak never thins out. */
+.airflow-streak {
   fill: none;
-  stroke-width: var(--flow-stroke);
   stroke-linecap: round;
   stroke-linejoin: round;
-
-  /* 760 + 340 = the DASH_CYCLE car.ts integrates its phase against. */
-  stroke-dasharray: 760 340;
   vector-effect: non-scaling-stroke;
+}
+
+/* The bloom is never dashed. It is the streak: one unbroken arc that is always
+   present end to end, so the trail can't blink out when a gap happens to sit
+   over the visible crop. */
+.airflow-streak.bloom {
+  stroke-width: var(--flow-bloom);
+  opacity: 0.3;
+}
+
+/* The core is the light running along that arc. 2200 + 1100 = the DASH_CYCLE
+   car.ts integrates its phase against, so speed shows as a bright pulse
+   travelling front to back rather than as a train of separate segments. */
+.airflow-streak.core {
+  stroke-width: var(--flow-stroke);
+  stroke-dasharray: 2200 1100;
 }
 
 .car-caption {
   color: var(--muted);
-  font-size: 0.85rem;
-  max-width: 40rem;
+  font-size: 1rem;
   margin: 0.75rem 0 0;
 }
 
@@ -421,7 +470,7 @@ header p {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.75rem;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
 }
 
 .stat {
