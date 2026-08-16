@@ -127,15 +127,14 @@ header p {
   height: auto;
 }
 
-.corner-speed-path {
-  fill: none;
-  stroke: var(--corner-color);
-  stroke-width: 2.5;
-}
-
+/* No stroke colour here on purpose: each path carries a stroke="url(#...)"
+   attribute pointing at its dark-to-light ramp, and a CSS stroke would win over
+   it. --corner-color / --top-speed-color stay the solid mid-tone used by the
+   markers and the legend swatches, so the ramp is a shading of the same hue
+   rather than a second colour scheme. */
+.corner-speed-path,
 .top-speed-path {
   fill: none;
-  stroke: var(--top-speed-color);
   stroke-width: 2.5;
 }
 
@@ -375,13 +374,20 @@ header p {
 }
 
 /* The drawing and its slider share one panel so the control reads as part of
-   the car rather than a separate widget parked underneath it. */
+   the car rather than a separate widget parked underneath it.
+
+   The drawing's own greys (its wing, wheels and bodywork shadows) sample as
+   #403338 --- hsl(337 11% 22%), a warm plum. The panel used to be #15171d, a
+   cool blue-grey, so car and box read as two different materials. These stops
+   are that same hue and saturation taken down to 11% and 7% lightness: still
+   clearly darker than the car, but now the same family. The top wash is warmed
+   to match rather than a neutral white. */
 .car-panel {
   border: 1px solid rgb(255 255 255 / 8%);
   border-radius: 0.75rem;
   background:
-    radial-gradient(120% 90% at 50% 0%, rgb(255 255 255 / 5%), transparent 62%),
-    linear-gradient(180deg, #15171d, #0f1115);
+    radial-gradient(120% 90% at 50% 0%, rgb(255 238 245 / 5%), transparent 62%),
+    linear-gradient(180deg, #1f191c, #151114);
   box-shadow: 0 10px 30px rgb(0 0 0 / 45%);
   padding: 0.5rem 0.9rem 1rem;
 }
@@ -515,12 +521,102 @@ header p {
   }
 }
 
-.model-disclaimer {
-  margin: 0.6rem 0 0;
+/* Secondary by construction: collapsed by default, so the model's internals sit
+   one click away instead of competing with the slider for attention. Same
+   panel treatment, label face and hue ramp as everything above it. */
+.model-notes {
+  margin-top: 2rem;
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 0.75rem;
+  background: var(--bg-elevated);
+}
+
+/* display: flex also suppresses the browser's own disclosure triangle in
+   Chrome, so the caret below is the only marker in either engine. */
+.model-notes > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  font-family: var(--font-label);
   font-size: 0.78rem;
-  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--muted);
-  max-width: 40rem;
+  list-style: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.model-notes > summary:hover,
+.model-notes > summary:focus-visible {
+  color: var(--ink);
+}
+
+.model-notes > summary::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-top: 0.28rem solid transparent;
+  border-bottom: 0.28rem solid transparent;
+  border-left: 0.4rem solid var(--accent);
+  transition: transform 0.18s ease;
+}
+
+.model-notes[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.model-notes-body {
+  padding: 0 1rem 1.1rem;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.model-notes-body p {
+  margin: 0 0 0.85rem;
+}
+
+.model-notes-body p:last-child {
+  margin-bottom: 0;
+}
+
+.model-notes-body strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.model-relations {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0 0 1rem;
+}
+
+.model-relations > div {
+  display: grid;
+  grid-template-columns: 8.5rem 1fr;
+  gap: 0.25rem 1rem;
+}
+
+.model-relations dt {
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.model-relations dd {
+  margin: 0;
+}
+
+@media (width <= 34rem) {
+  .model-relations > div {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
