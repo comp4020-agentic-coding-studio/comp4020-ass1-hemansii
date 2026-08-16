@@ -54,10 +54,16 @@ const carImage = `${import.meta.env.BASE_URL}/car.png`;
         <div class="car-controls">
           <div class="slider-row">
             <span class="slider-end-label" aria-hidden="true">0°</span>
+            {/* The label opens with the visible label's exact words so the
+                accessible name still contains what's on screen (WCAG 2.5.3).
+                The live value goes in aria-valuetext, set by interaction.ts:
+                that is the attribute screen readers re-read on every change,
+                whereas a name that changes underneath the user is not. */}
             <input
               type="range"
               id="wing-angle"
               data-testid="wing-angle-slider"
+              aria-label="Drag to adjust wing angle. Sets the rear wing's tilt from 0 to 30 degrees, which drives downforce, drag, corner speed and top speed."
               min="0"
               max="30"
               step="1"
@@ -80,30 +86,37 @@ const carImage = `${import.meta.env.BASE_URL}/car.png`;
     <section class="chart-section" aria-labelledby="chart-heading">
       <h2 id="chart-heading">Corner speed and top speed vs. wing angle</h2>
 
-      <svg class="angle-chart" viewBox="0 0 600 210" data-testid="angle-chart" aria-hidden="true">
-        <defs>
-          {/* Both ramps run across the same plot extents (x 12..588 = 0..30 deg),
-              so "dark at flat wing, light at full wing" reads identically on the
-              two lines. Set as an attribute rather than in CSS: a url(#id) in a
-              stylesheet resolves its fragment against the stylesheet, not the
-              document. */}
-          <linearGradient id="corner-ramp" gradientUnits="userSpaceOnUse" x1="12" x2="588">
-            <stop offset="0" stop-color="#207974"></stop>
-            <stop offset="1" stop-color="#82ede8"></stop>
-          </linearGradient>
-          <linearGradient id="top-speed-ramp" gradientUnits="userSpaceOnUse" x1="12" x2="588">
-            <stop offset="0" stop-color="#a56f12"></stop>
-            <stop offset="1" stop-color="#fcd87e"></stop>
-          </linearGradient>
-        </defs>
-        <line class="stall-line" data-testid="stall-line"></line>
-        <text class="stall-annotation" data-testid="stall-annotation">Stall — past this point, you lose both</text>
-        <path class="corner-speed-path" data-testid="corner-speed-path" stroke="url(#corner-ramp)"></path>
-        <path class="top-speed-path" data-testid="top-speed-path" stroke="url(#top-speed-ramp)"></path>
-        <line class="marker-line" data-testid="angle-marker-line"></line>
-        <circle class="corner-speed-marker" data-testid="corner-speed-marker" r="4"></circle>
-        <circle class="top-speed-marker" data-testid="top-speed-marker" r="4"></circle>
-      </svg>
+      {/* Axis labels live outside the SVG rather than in it: as real text they
+          take the page's own font and rem sizing directly, and the plot's
+          geometry, gradient coordinates and height all stay untouched. */}
+      <div class="chart-frame">
+        <span class="axis-label axis-label-y" aria-hidden="true">Speed (km/h)</span>
+        <svg class="angle-chart" viewBox="0 0 600 210" data-testid="angle-chart" aria-hidden="true">
+          <defs>
+            {/* Both ramps run across the same plot extents (x 12..588 = 0..30
+                deg), so "dark at flat wing, light at full wing" reads identically
+                on the two lines. Set as an attribute rather than in CSS: a
+                url(#id) in a stylesheet resolves its fragment against the
+                stylesheet, not the document. */}
+            <linearGradient id="corner-ramp" gradientUnits="userSpaceOnUse" x1="12" x2="588">
+              <stop offset="0" stop-color="#207974"></stop>
+              <stop offset="1" stop-color="#82ede8"></stop>
+            </linearGradient>
+            <linearGradient id="top-speed-ramp" gradientUnits="userSpaceOnUse" x1="12" x2="588">
+              <stop offset="0" stop-color="#a56f12"></stop>
+              <stop offset="1" stop-color="#fcd87e"></stop>
+            </linearGradient>
+          </defs>
+          <line class="stall-line" data-testid="stall-line"></line>
+          <text class="stall-annotation" data-testid="stall-annotation">Stall — past this point, you lose both</text>
+          <path class="corner-speed-path" data-testid="corner-speed-path" stroke="url(#corner-ramp)"></path>
+          <path class="top-speed-path" data-testid="top-speed-path" stroke="url(#top-speed-ramp)"></path>
+          <line class="marker-line" data-testid="angle-marker-line"></line>
+          <circle class="corner-speed-marker" data-testid="corner-speed-marker" r="4"></circle>
+          <circle class="top-speed-marker" data-testid="top-speed-marker" r="4"></circle>
+        </svg>
+        <span class="axis-label axis-label-x" aria-hidden="true">Wing angle (°)</span>
+      </div>
 
       <div class="chart-meta">
         <p class="chart-legend">
@@ -124,22 +137,28 @@ const carImage = `${import.meta.env.BASE_URL}/car.png`;
       </p>
     </section>
 
+    {/* Each card is the live region rather than the number inside it, and
+        aria-atomic makes the whole card the announcement, so a screen reader
+        says "Downforce, 4253 N" instead of a bare "4253 N" with no clue which
+        of the four stats just moved. The values are plain spans for the same
+        reason: <output> carries an implicit role="status", which would nest a
+        second live region inside this one and win the announcement back. */}
     <div class="stat-grid">
-      <div class="stat">
+      <div class="stat" aria-live="polite" aria-atomic="true">
         <span class="stat-label">Downforce</span>
-        <output for="wing-angle" data-testid="downforce-value" class="stat-value"></output>
+        <span data-testid="downforce-value" class="stat-value"></span>
       </div>
-      <div class="stat">
+      <div class="stat" aria-live="polite" aria-atomic="true">
         <span class="stat-label">Drag coefficient</span>
-        <output for="wing-angle" data-testid="drag-value" class="stat-value"></output>
+        <span data-testid="drag-value" class="stat-value"></span>
       </div>
-      <div class="stat">
+      <div class="stat" aria-live="polite" aria-atomic="true">
         <span class="stat-label">Corner speed</span>
-        <output for="wing-angle" data-testid="corner-speed-value" class="stat-value"></output>
+        <span data-testid="corner-speed-value" class="stat-value"></span>
       </div>
-      <div class="stat">
+      <div class="stat" aria-live="polite" aria-atomic="true">
         <span class="stat-label">Top speed</span>
-        <output for="wing-angle" data-testid="top-speed-value" class="stat-value"></output>
+        <span data-testid="top-speed-value" class="stat-value"></span>
       </div>
     </div>
 
